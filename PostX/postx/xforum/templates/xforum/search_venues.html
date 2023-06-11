@@ -1,0 +1,28 @@
+{% extends "xforum/base.html" %}
+
+{% block form2 %}
+{% endblock form2 %}
+
+{% block content %}
+<div class="page_body-container">
+    <div class="page-container">
+        <div class="content__container">
+        {% if searched %}
+            <h2 class="webpage__title"> You searched for {{ searched }} </h2>
+            <div class="results_searched">
+            {% for venue in venues %}
+                <span><a class="search__article-link" href="{% url 'post' venue.slug %}">{{ venue.title }}</a></span>
+                <br>
+                <br>
+            {% endfor %}
+            </div>
+        {% else %}
+            <h2 class="webpage__title">You forgot to search. Try again please</h2>
+            <div class="results_searched">
+                <p>No search results</p>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

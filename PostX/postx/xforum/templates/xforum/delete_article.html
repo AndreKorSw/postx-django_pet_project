@@ -1,0 +1,21 @@
+
+{% extends "xforum/base.html" %}
+{% block form2 %}
+{% endblock form2 %}
+{% block content %}
+    <div class="page_body-container">
+        <div class="page-container">
+            <div class="content__container">
+                <h2 class="webpage__title">Are you sure to delete your post?</h2>
+                <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div>{{ form.non_field_errors }}</div>
+                {{ form.as_p }}
+                <button class="article__learn-more" type="submit"><span class="article__learn-more-link">Delete</span></button>
+            </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

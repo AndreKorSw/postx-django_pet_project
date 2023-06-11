@@ -1,0 +1,123 @@
+{% extends "xforum/base.html" %}
+{% load static %}
+{% block form2 %}
+{% endblock form2 %}
+
+{% block content %}
+    <div class="page_body-container">
+        <div class="page-container-post">
+            <div class="content__container-post">
+              	<div class="article-post">
+					<span class="article__user-data">
+						{% if post.user_name.profile.profile_pic %}
+						<span class="user__avatar"><img src="{{ post.user_name.profile.profile_pic.url }}" alt="" class="user__avatar-pic" width="40" height="40"></span>
+						{% else %}
+						<span class="user__avatar"><img src="{% static 'xforum/images/img/user profile image.jpg' %}" alt="" class="user__avatar-pic" width="40" height="40"></span>
+						{% endif %}
+						{% if post.user_name.profile.id %}
+						<span class="article__username"><a href="{% url 'show_profile' post.user_name.profile.id %} " class="article__username-link">{{ post.user_name }}</a></span>
+						{% else %}
+						<span class="article__username"><a href="{% url 'anon_user_profile' %}" class="article__username-link">{{ post.user_name }}</a></span>
+						{% endif %}
+						<span class="article__time-create">{{ post.time_create}}</span>
+					</span>
+					<h2 class="article__title"><a href="" class="article__title-link">{{ post.title }}</a></h2>
+					<span class="article__time_to_read-image"><img src="{% static 'xforum/images/img/time.svg' %}" alt="" class="article__time_to_read-pic"></span><span class="article__time_to_read">{{ post.time_to_read }} min</span>
+					<div class="article__categoies">
+						<span class="article__category"><a href="" class="article__category-link">{{ post.cat }}</a></span>
+
+					</div>
+					{% if post.photo %}
+					<div class="article__image"><img src="{{ post.photo.url }}" alt="" class="article__pic"></div>
+					{% endif %}
+					<div class="article__text">{{ post.content|linebreaks }}</div>
+					<div class="article__action_menu">
+						{% if user.id == post.user_name.id %}
+						<div class="article__action_submenu">
+							<span class="article__learn-more"><a href="{% url 'update_article' post.slug %}" class="article__learn-more-link">Update</a></span>
+							<span class="article__learn-more"><a href="{% url 'delete_article' post.slug %}" class="article__learn-more-link">Delete</a></span>
+						</div>
+						{% endif %}
+					</div>
+					<div class="article__data-icons">
+						<div class="article__likes">
+							<form action="{% url 'like_post' post.slug %}" method="POST">
+								{% csrf_token %}
+
+								{% if user.is_authenticated %}
+									{% if liked %}
+										<button type="submit" name="post_id" value="{{ post.id }}"><img src="{% static 'xforum/images/img/like_thumb.svg' %}" alt="" class="article__like-pic"></button> - {{ post.total_likes }}
+									{% else %}
+										<button type="submit" name="post_id" value="{{ post.id }}"><img src="{% static 'xforum/images/img/like_thumb.svg' %}" alt="" class="article__like-pic"></button> - {{ post.total_likes }}
+									{% endif %}
+								{% else %}
+									<img src="{% static 'xforum/images/img/like_thumb.svg' %}" alt="" class="article__like-pic"> - {{ post.total_likes }}
+								{% endif %}
+								<div class="article__comments">
+									<a href="{{ p.get_absolute_url }}" class="article__comments-link">View comments</a>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div class="comments__container">
+					<div class="article__comments-block">
+						<h3 class="comments__title">Comments</h3>
+						<div class="comments__body">
+						{% if not post.comments.all %}
+							{% if user.is_authenticated %}
+							<span class="no_comments">No comments yet</span>
+							<br>
+							<br>
+							<a href="{% url 'add_comment' post.id %}" class="add_comment-link">Add one here. . .</a>
+
+							{% else %}
+								<span class="no_comments">You must be authenticated to add comments</span>
+								<br>
+								<a href="{% url 'login' %}" class="add_comment-link">Login here</a> or <a href="{% url 'register' %}" class="add_comment-link">Register</a>
+							{% endif %}
+						{% else %}
+							{% if user.is_authenticated %}
+								<a href="{% url 'add_comment' post.id %}" class="add_comment-link">Add one here. . .</a>
+								<br>
+								<br>
+							{% else %}
+								<span class="no_comments">You must be authenticated to add comments</span>
+								<br>
+								<a href="{% url 'login' %}" class="add_comment-link">Login here</a> or <a href="{% url 'register' %}" class="add_comment-link">Register</a>
+								<br>
+							{% endif %}
+							{% for comment in post.comments.all %}
+								{% if comment.comment_author.id == user.id %}
+									{% if comment.comment_author.profile.profile_pic %}
+									<span class="comment__username"><img src="{{ comment.comment_author.profile.profile_pic.url }}" alt=""width="20" height="20"></span><span class="comment__username">{{ comment.comment_author }}</span> - <span class="comment__date">{{ comment.date_added }}</span>
+									<a href="{% url 'delete_comment' comment.id %}" class="del-link">Delete</a>
+									{% else %}
+									<span class="comment__username"><img src="{% static 'xforum/images/img/user profile image.jpg' %}" alt=""width="20" height="20"></span><span class="comment__username">{{ comment.comment_author }}</span> - <span class="comment__date">{{ comment.date_added }}</span>
+									<a href="{% url 'delete_comment' comment.id %}" class="del-link"> Delete</a>
+									{% endif %}
+								{% else %}
+									{% if comment.comment_author.profile.profile_pic %}
+									<span class="comment__username"><img src="{{ comment.comment_author.profile.profile_pic.url }}" alt="" width="20" height="20"></span><span class="comment__username">{{ comment.comment_author }}</span> - <span class="comment__date">{{ comment.date_added }}</span>
+									{% else %}
+									<span class="comment__username"><img src="{% static 'xforum/images/img/user profile image.jpg' %}" alt="" width="20" height="20"></span><span class="comment__username">{{ comment.comment_author }}</span> - <span class="comment__date">{{ comment.date_added }}</span>
+
+									{% endif %}
+
+								{% endif %}
+
+								<div class="comment__content">{{ comment.body }}</div>
+								<br>
+							{% endfor %}
+						{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+
+
+

@@ -1,0 +1,136 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>{{ title }}</title>
+	<meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
+	<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="{% static 'xforum/css/style.css' %}">
+	<meta name="viewport" content="width=device-width">
+	<link rel="shortcut icon" href="{% static 'xforum/images/img/favicon.ico' %}">
+</head>
+
+<body>
+{% block mainmenu %}
+	<div class="wrapper">
+		<div class="header__top">
+			<a href="{% url 'home' %}" class="header__logo-link"><img src="{% static 'xforum/images/img/default-monochrome-white.svg' %}" alt="" class="header__logo-pic"></a>
+			<form class="search_form" method="POST" action="{% url 'search-venues' %}">
+				{% csrf_token %}
+				<input class="search__input" type="search" placeholder="Search . . ." name="searched">
+				<button  class="form__btn" type="submit"><img src="{% static 'xforum/images/img/search-icon.svg' %}" alt="" class="search__logo-pic"></button>
+			</form>
+		</div>
+		<header class="header">
+			<div class="header__container">
+				<div class="header__burger">
+					<span></span>
+				</div>
+				<nav class="header__menu">
+					<ul class="header__list">
+						{% for m in menu %}
+							<li class="header__item"><a href="{% url m.url_name %}" class="header__link">{{ m.title }}</a></li>
+						{% endfor %}
+					</ul>
+
+				</nav>
+
+				<div class="user__info">
+					{% if request.user.is_authenticated %}
+						{% if user.profile.id %}
+							<span class="user__logo"><a href="{% url 'show_profile' user.profile.id %}" class="user__logo-link">{{ user.username }}</a> | <a href="{% url 'logout' %}" class="user__logo-link">Log Out</a></span>
+						{% else %}
+							<span class="user__logo"><a href="{% url 'create_profile' %}" class="user__logo-link">{{ user.username }}</a> | <a href="{% url 'logout' %}" class="user__logo-link">Log Out</a></span>
+						{% endif %}
+					{% else %}
+						<span class="user__logo"><a href="{% url 'register' %}" class="user__logo-link">Sign In</a> | <a href="{% url 'login' %}" class="user__logo-link">Login</a></span>
+					{% endif%}
+				</div>
+
+			</div>
+
+		</header>
+		{% block form2 %}
+		<div class="block__form2">
+			<form class="search_form2" method="POST" action="{% url 'search-venues' %}">
+				{% csrf_token %}
+				<input class="search__input2" type="search" placeholder="Search . . ." name="searched">
+				<button  class="form__btn2" type="submit"><img src="{% static 'xforum/images/img/search.svg' %}" alt="" class="search__logo-pic"></button>
+			</form>
+		</div>
+		{% endblock form2 %}
+
+{% block content %}
+
+{% endblock %}
+
+		<footer class="footer">
+			<div class="footer__container">
+				<div class="footer__menu">
+					<div class="footer__title">Account</div>
+					<ul class="footer__list">
+						<li class="footer__item"><a href="{% url 'register' %}" class="footer__link">Sign in</a></li>
+						{% if user.is_authenticated %}
+						<li class="footer__item"><a href="{% url 'logout' %}" class="footer__link">Log out</a></li>
+						{% else %}
+						<li class="footer__item"><a href="{% url 'login' %}" class="footer__link">Login</a></li>
+						{% endif %}
+					</ul>
+
+				</div>
+				<div class="footer__menu">
+					<div class="footer__title">Info</div>
+					<ul class="footer__list">
+						<li class="footer__item"><a href="{% url 'faq' %}" class="footer__link">FAQ</a></li>
+						<li class="footer__item"><a href="{% url 'documents' %}" class="footer__link">Documents</a></li>
+					</ul>
+
+				</div>
+				<div class="footer__menu">
+					<div class="footer__title">Parthnership</div>
+					<ul class="footer__list">
+						<li class="footer__item"><a href="{% url 'for_users' %}" class="footer__link">For users</a></li>
+						<li class="footer__item"><a href="{% url 'for_authors' %}" class="footer__link">For authors</a></li>
+					</ul>
+
+				</div>
+
+			</div>
+
+		</footer>
+		<div class="footer__bottom">
+			<div class="bottom__menu">
+				<ul class="bottom__list">
+					<li class="bottom__item"><span class="bottom__span">&#169; PostX 2023</span></li>
+					<li class="bottom__item"><a href="#!" class="bottom__link">Privacy Policy</a></li>
+					<li class="bottom__item"><a href="#!" class="bottom__link">Agreement</a></li>
+					<li class="bottom__item"><a href="#!" class="bottom__link">Cookies</a></li>
+
+				</ul>
+				<ul class="social__nets">
+					<li class="social__item"><a href="" class="social__link"><img src="{% static 'xforum/images/img/telega.svg' %}" alt="" class="social__icon"></a></li>
+					<li class="social__item"><a href="" class="social__link"><img src="{% static 'xforum/images/img/yt.svg' %}" alt="" class="social__icon"></a></li>
+					<li class="social__item"><a href="" class="social__link"><img src="{% static 'xforum/images/img/vk.svg' %}" alt="" class="social__icon"></a></li>
+					<li class="social__item"><a href="" class="social__link"><img src="{% static 'xforum/images/img/twitter.svg' %}" alt="" class="social__icon"></a></li>
+					<li class="social__item"><a href="" class="social__link"><img src="{% static 'xforum/images/img/linkdin.svg' %}" alt="" class="social__icon"></a></li>
+					<li class="social__item"><a href="" class="social__link"><img src="{% static 'xforum/images/img/mail.svg' %}" alt="" class="social__icon"></a></li>
+
+
+				</ul>
+			</div>
+		</div>
+	</div>
+
+
+<script  src="{% static 'xforum/js/script.js' %}" type=""></script>
+
+
+
+{% endblock mainmenu %}
+</body>
+
+</html>
+
+

@@ -1,0 +1,31 @@
+{% extends "xforum/base.html" %}
+{% load static %}
+
+{% block form2 %}
+{% endblock form2 %}
+{% block content %}
+
+<div class="page_body-container">
+    <div class="page-container">
+        <div class="content__container">
+            <h2 class="webpage__title">Anonyomous profile</h2>
+            <div class="profile__content">
+                <div class="about__user">
+                    <div class="user__profile-image"><img src="{% static 'xforum/images/img/user profile image.jpg' %}" alt="" class="user_profile-pic" width="200" height="200"></div>
+                    <div class="user_profile-body">
+                        <span class="profile__username">{{ page_user }}</span>
+                        <ul class="profile_user-data">
+                            <li class="profile_user-item">No user data</li>
+                        </ul>
+                    </div>
+                </div>
+                <h3 class="user-bio">BIO</h3>
+                <div class="profile-bio">No user bio</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

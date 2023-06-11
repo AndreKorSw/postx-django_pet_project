@@ -1,0 +1,154 @@
+{% extends "xforum/base.html" %}
+{% load static %}
+{% load xforum_tags %}
+
+{% block content %}
+		<main class="main">
+			<aside class="sidebar">
+				<div class="sidebar_container">
+					<h2 class="sidebar__title">Latest news</h2>
+					<nav class="sidebar__menu">
+						<ul class="sidebar__list">
+							{% for p in posts|slice:":4"  %}
+							<li class="sidebar__item">
+								<a href="{{ p.get_absolute_url }}" class="sidebar__link">{{ p.title }}</a>
+								<div class="sidebar__data-items">
+									<div class="sidebar__data-views">
+										<img src="img/sidebar__data-views.svg" alt="">
+										<span class="data-views__text"><img src="{% static 'xforum/images/img/like_thumb.svg' %}" alt="" class="article__like-pic"> - {{ p.total_likes }}</span>
+									</div>
+									<div class="sidebar__data-comments">
+										<img src="img/sidebar-data_comments.svg" alt="">
+										<span class="data-views__text"><img src="{% static 'xforum/images/img/comments article round.svg' %}" alt="" class="article__like-pic"></span>
+									</div>
+								</div>
+
+							</li>
+							{% endfor %}
+						</ul>
+					</nav>
+				</div>
+
+			</aside>
+			<div class="main__container">
+				<section class="categories">
+					<div class="category__menu">
+					{% if cat_selected == 0 %}
+					    <h2 class="category__title">All categories</h2>
+					{% else %}
+						<h2 class="category__title"><a href="{% url 'home' %}" class="category__title-link">All categories</a></h2>
+					{% endif %}
+						<ul class="category__list">
+						{% show_categories  "-name" cat_selected %}
+						</ul>
+						<form action="" method="get" id="sortProductById">
+							<input type="hidden" name="orderby" value="id" />
+						</form>
+						<form action="" method="get" id="sortProductByDate">
+							<input type="hidden" name="orderby" value="-time_create" />
+						</form><form action="" method="get" id="sortProductByDate2">
+							<input type="hidden" name="orderby" value="time_create" />
+						</form>
+
+						<ul class="filter__list">
+							<li class="filter__item">
+								<span class="filter__link">Filter: </span>
+								<button class="filter__submit" type="submit" value="filtering"></button>
+								<span class="filter__arrow"></span>
+								<ul class="filter__sublist">
+									<li class="sublist__item"><a class="sublist__item-link" href="#" title="Сброс сортировки" onclick="document.getElementById('sortProductById').submit();">Default</a></li>
+									<li class="sublist__item"><a  class="sublist__item-link" href="#" title="Сброс сортировки" onclick="document.getElementById('sortProductByDate').submit();">Newest</a></li>
+									<li class="sublist__item"><a class="sublist__item-link" href="#" title="Сброс сортировки" onclick="document.getElementById('sortProductByDate2').submit();">Latest</a></li>
+								</ul>
+							</li>
+						</ul>
+
+
+
+
+					</div>
+				</section>
+				<section class="articles">
+					{% for p in posts %}
+					<div class="article">
+						<span class="article__user-data">
+							{% if p.user_name.profile.profile_pic %}
+							<span class="user__avatar"><img src="{{ p.user_name.profile.profile_pic.url }}" alt="" class="user__avatar-pic" width="30" height="30"></span>
+							{% else %}
+							<span class="user__avatar"><img src="{% static 'xforum/images/img/user profile image.jpg' %}" alt="" class="user__avatar-pic" width="30" height="30"></span>
+							{% endif %}
+							<span class="article__username"><span>{{ p.user_name }}</span></span>
+							<span class="article__time-create">{{ p.time_create}}</span>
+						</span>
+						<h2 class="article__title"><a href="{{ p.get_absolute_url }}" class="article__title-link">{{ p.title }}</a></h2>
+						<span class="article__time_to_read-image"><img src="{% static 'xforum/images/img/time.svg' %}" alt="" class="article__time_to_read-pic"></span><span class="article__time_to_read">{{ p.time_to_read }} min</span>
+						<div class="article__categoies">
+							<span class="article__category"><a href="" class="article__category-link">{{ p.cat }}</a></span>
+
+						</div>
+						{% if p.photo %}
+						<div class="article__image"><img src="{{ p.photo.url }}" alt="" class="article__pic"></div>
+						{% endif %}
+						<div class="article__text">{{ p.content|linebreaks|truncatewords:50 }}</div>
+						<div class="article__action_menu">
+							<span class="article__learn-more"><a href="{{ p.get_absolute_url }}" class="article__learn-more-link">Learn more</a></span>
+							{% if user.id == p.user_name.id %}
+							<div class="article__action_submenu">
+								<span class="article__learn-more"><a href="{% url 'update_article' p.slug %}" class="article__learn-more-link">Update</a></span>
+								<span class="article__learn-more"><a href="{% url 'delete_article' p.slug %}" class="article__learn-more-link">Delete</a></span>
+							</div>
+							{% endif %}
+						</div>
+						<div class="article__data-icons">
+							<div class="article__likes">
+								<form action="{% url 'like_post' p.slug %}" method="POST">
+									{% csrf_token %}
+
+									{% if user.is_authenticated %}
+										{% if liked %}
+											<button type="submit" name="post_id" value="{{ p.id }}"><img src="{% static 'xforum/images/img/like_thumb.svg' %}" alt="" class="article__like-pic"></button> - {{ p.total_likes }}
+										{% else %}
+											<button type="submit" name="post_id" value="{{ p.id }}"><img src="{% static 'xforum/images/img/like_thumb.svg' %}" alt="" class="article__like-pic"></button> - {{ p.total_likes }}
+										{% endif %}
+									{% else %}
+										<img src="{% static 'xforum/images/img/like_thumb.svg' %}" alt="" class="article__like-pic"> - {{ p.total_likes }}
+									{% endif %}
+								</form>
+							</div>
+							<div class="article__comments">
+								<a href="{{ p.get_absolute_url }}" class="article__comments-link"><img src="{% static 'xforum/images/img/comments article round.svg' %}" alt="" class="article__like-pic"></a>
+							</div>
+						</div>
+					</div>
+					{% endfor %}
+				</section>
+				<section class="pagination">
+					<div class="pagination__menu">
+						{% if page_obj.has_previous %}
+						<div class="pagination__left"><a href="?page={{ page_obj.previous_page_number }}" class="pagination__left-link"><img src="{% static 'xforum/images/img/pagination left.svg' %}" alt="" class="pagination__left-pic"></a></div>
+						{% else %}
+						<div class="pagination__left"><span class="pagination__left-link"><img src="{% static 'xforum/images/img/pagination left.svg' %}" alt="" class="pagination__left-pic"></span></div>
+						{% endif %}
+						<ul class="pagination__list">
+						{% for p in paginator.page_range %}
+							{% if page_obj.number == p %}
+							<li class="pagination__item">{{ p }}</li>
+							{% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+							<li class="pagination__item"><a href="?page={{ p }}" class="pagination__link">{{ p }}</a></li>
+							{% endif %}
+						{% endfor %}
+						</ul>
+						{% if page_obj.has_next %}
+						<div class="pagination__right">
+							<a href="?page={{ page_obj.next_page_number }}" class="pagination__right-link"><img src="{% static 'xforum/images/img/pagination right.svg' %}" alt="" class="pagination__right-pic"></a>
+						</div>
+						{% else %}
+						<div class="pagination__right"><span class="pagination__right-link"><img src="{% static 'xforum/images/img/pagination right.svg' %}" alt="" class="pagination__right-pic"></span></div>
+						{% endif %}
+					</div>
+				</section>
+			</div>
+		</main>
+
+
+{% endblock %}

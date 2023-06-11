@@ -1,0 +1,59 @@
+{% extends "xforum/base.html" %}
+{% load static %}
+{% block form2 %}
+{% endblock form2 %}
+
+{% block content %}
+
+<div class="page_body-container">
+    <div class="page-container">
+
+        <div class="content__container">
+            {% if user.id == page_user.id %}
+                <h2 class="webpage__title">Your profile</h2>
+            {% else %}
+                <h2 class="webpage__title">{{ page_user }} profile</h2>
+            {% endif %}
+            <div class="profile__content">
+                <div class="about__user">
+                    {% if page_user.profile_pic %}
+                    <div class="user__profile-image"><img src="{{ page_user.profile_pic.url }}" alt="" class="user_profile-pic" width="200" height="200"></div>
+                    {% else %}
+                    <div class="user__profile-image"><img src="{% static 'xforum/images/img/user profile image.jpg' %}" alt="" class="user_profile-pic" width="200" height="200"></div>
+                    {% endif %}
+                    <div class="user_profile-body">
+                        {% if user.id == profile.user.id %}
+                        <span class="profile__username">{{ page_user }}</span> | <span class="edit__profile"><a href="{% url 'edit_profile' user.id  %}" class="edit__profile-link">Edit</a></span>
+                        {% else %}
+                        <span class="profile__username">{{ page_user }}</span>
+                        {% endif %}
+                        <ul class="profile_user-data">
+                            {% if page_user.twitter_url %}
+                                <li class="profile_user-item"><a class="profile__net-link" href="{{ page_user.twitter_url }} ">Twitter </a></li>
+                            {% endif %}
+                            {% if page_user.instagram_url %}
+                                <li class="profile_user-item"><a class="profile__net-link" href="{{ page_user.instagram_url }} ">Instagram </a></li>
+                            {% endif %}
+                            {% if page_user.linkdn_url %}
+                                <li class="profile_user-item"><a class="profile__net-link" href="{{ page_user.linkdn_url }} ">LK </a></li>
+                            {% endif %}
+                            {% if page_user.vk_url %}
+                                <li class="profile_user-item"><a class="profile__net-link" href="{{ page_user.vk_url }} ">Vk </a></li>
+                            {% endif %}
+                            {% if page_user.web_site_url %}
+                                <li class="profile_user-item"><a class="profile__net-link" href="{{ page_user.web_site_url }} ">Website </a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                </div>
+                <h3 class="user-bio">BIO</h3>
+                <div class="profile-bio">{{ page_user.bio }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
